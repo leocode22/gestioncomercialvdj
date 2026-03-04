@@ -50,7 +50,7 @@ export default function EmployeeKPI() {
   }
 
   async function handleSubmit(objective) {
-    const value = Number(entries[objective.id])
+    const value = Math.floor(Number(entries[objective.id]))
     if (!value || value <= 0) return
 
     setSubmitting(objective.id)
@@ -176,10 +176,11 @@ export default function EmployeeKPI() {
                     type="number"
                     value={entries[obj.id] || ''}
                     onChange={e => setEntries(prev => ({ ...prev, [obj.id]: e.target.value }))}
+                    onKeyDown={e => (e.key === '.' || e.key === ',') && e.preventDefault()}
                     className="input"
                     placeholder={`ej: 3 ${obj.kpi_type}`}
                     min="0"
-                    step="0.5"
+                    step="1"
                   />
                 </div>
                 <div className="flex items-end">
