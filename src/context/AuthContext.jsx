@@ -9,12 +9,8 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      if (session?.user) fetchProfile(session.user.id)
-      else setLoading(false)
-    })
-
+    // onAuthStateChange fires INITIAL_SESSION immediately with the current session,
+    // so getSession() is redundant and would cause fetchProfile to be called twice.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setUser(session?.user ?? null)
       if (session?.user) {
@@ -29,14 +25,23 @@ export function AuthProvider({ children }) {
   }, [])
 
   async function fetchProfile(userId) {
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('id', userId)
-      .single()
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', userId)
+        .single()
 
-    if (!error && data) setProfile(data)
-    setLoading(false)
+      if (error) {
+        console.error('Error fetching user profile:', error)
+      } else if (data) {
+        setProfile(data)
+      }
+    } catch (err) {
+      console.error('Unexpected error fetching profile:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   async function signIn(email, password) {

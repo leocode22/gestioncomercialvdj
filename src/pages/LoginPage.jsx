@@ -9,8 +9,10 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  if (!loading && user && profile) {
-    return <Navigate to={profile.role === 'admin' ? '/admin' : '/employee'} replace />
+  // Redirect as soon as the user is authenticated — don't block on profile being loaded
+  // to avoid getting stuck if the public.users query fails or returns empty.
+  if (!loading && user) {
+    return <Navigate to={profile?.role === 'admin' ? '/admin' : '/employee'} replace />
   }
 
   async function handleSubmit(e) {
@@ -18,9 +20,18 @@ export default function LoginPage() {
     setError('')
     setIsLoading(true)
 
-    const { error: signInError } = await signIn(email, password)
-    if (signInError) {
-      setError('Email o contraseña incorrectos. Verifica tus credenciales.')
+    try {
+      const { error: signInError } = await signIn(email, password)
+      if (signInError) {
+        setError('Email o contraseña incorrectos. Verifica tus credenciales.')
+        setIsLoading(false)
+      }
+      // On success: AuthContext will update loading/user/profile via onAuthStateChange,
+      // triggering a re-render that hits the Navigate above. isLoading will be reset
+      // when the component unmounts on redirect.
+    } catch (err) {
+      console.error('Unexpected login error:', err)
+      setError('Ha ocurrido un error inesperado. Inténtalo de nuevo.')
       setIsLoading(false)
     }
   }
