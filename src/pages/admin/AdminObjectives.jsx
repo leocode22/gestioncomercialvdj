@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
+import { cache } from '../../lib/cache'
 import Modal from '../../components/Modal'
 import EmptyState from '../../components/EmptyState'
 
@@ -31,13 +32,25 @@ export default function AdminObjectives() {
   }, [])
 
   async function fetchData() {
+    const cached = cache.get('admin:objectives')
+    if (cached) {
+      setObjectives(cached.objectives)
+      setEmployees(cached.employees)
+      setLoading(false)
+      return
+    }
     setLoading(true)
-    const [{ data: objs }, { data: emps }] = await Promise.all([
-      supabase.from('objectives').select('*, users(name)').order('created_at', { ascending: false }),
+    // No usar join users(name): assigned_to es TEXT sin FK, PostgREST no puede resolverlo
+    const [{ data: objs, error }, { data: emps }] = await Promise.all([
+      supabase.from('objectives').select('*').order('created_at', { ascending: false }),
       supabase.from('users').select('id, name').eq('role', 'employee').order('name'),
     ])
-    setObjectives(objs || [])
-    setEmployees(emps || [])
+    if (error) console.error('Error fetching objectives:', error)
+    const objectives = objs || []
+    const employees = emps || []
+    cache.set('admin:objectives', { objectives, employees })
+    setObjectives(objectives)
+    setEmployees(employees)
     setLoading(false)
   }
 
@@ -75,6 +88,7 @@ export default function AdminObjectives() {
     }
 
     if (!error) {
+      cache.del('admin:objectives', 'admin:dashboard')
       setModalOpen(false)
       await fetchData()
     }
@@ -84,6 +98,7 @@ export default function AdminObjectives() {
   async function handleDelete(id) {
     await supabase.from('kpi_entries').delete().eq('objective_id', id)
     await supabase.from('objectives').delete().eq('id', id)
+    cache.del('admin:objectives', 'admin:dashboard')
     setDeleteId(null)
     await fetchData()
   }
@@ -151,7 +166,7 @@ export default function AdminObjectives() {
                   </td>
                   <td className="py-3 pr-4">
                     <span className="text-dark-300 text-sm">
-                      {obj.assigned_to === 'team' ? '👥 Equipo' : (obj.users?.name || obj.assigned_to)}
+                      {obj.assigned_to === 'team' ? '👥 Equipo' : (employees.find(e => e.id === obj.assigned_to)?.name || obj.assigned_to)}
                     </span>
                   </td>
                   <td className="py-3 pr-4">

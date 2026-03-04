@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
+import { cache } from '../../lib/cache'
 import StatCard from '../../components/StatCard'
 import ProgressBar from '../../components/ProgressBar'
 
@@ -13,39 +14,32 @@ export default function AdminDashboard() {
   }, [])
 
   async function fetchData() {
+    const cached = cache.get('admin:dashboard')
+    if (cached) {
+      setEmployees(cached.employees)
+      setStats(cached.stats)
+      setLoading(false)
+      return
+    }
     setLoading(true)
 
-    // Fetch all employees
-    const { data: users } = await supabase
-      .from('users')
-      .select('*')
-      .eq('role', 'employee')
-      .order('name')
+    const now = new Date().toISOString().split('T')[0]
+
+    // 3 queries en paralelo en lugar de 1 + 2×N queries en cascada
+    const [{ data: users }, { data: allObjectives }, { data: allPointTx }] = await Promise.all([
+      supabase.from('users').select('*').eq('role', 'employee').order('name'),
+      supabase.from('objectives').select('*, kpi_entries(*)').lte('start_date', now).gte('end_date', now),
+      supabase.from('point_transactions').select('user_id, points'),
+    ])
 
     if (!users) { setLoading(false); return }
 
-    // For each employee, get their active objective and total points
-    const now = new Date().toISOString().split('T')[0]
+    const employeesWithData = users.map(u => {
+      const activeObjective = (allObjectives || []).find(obj =>
+        obj.assigned_to === u.id || obj.assigned_to === 'team'
+      ) || null
 
-    const employeesWithData = await Promise.all(users.map(async (u) => {
-      const [{ data: objectives }, { data: pointTx }] = await Promise.all([
-        supabase
-          .from('objectives')
-          .select('*, kpi_entries(*)')
-          .or(`assigned_to.eq.${u.id},assigned_to.eq.team`)
-          .lte('start_date', now)
-          .gte('end_date', now)
-          .limit(1),
-        supabase
-          .from('point_transactions')
-          .select('points')
-          .eq('user_id', u.id)
-      ])
-
-      const totalPoints = (pointTx || []).reduce((sum, t) => sum + t.points, 0)
-      const activeObjective = objectives?.[0] || null
       let progress = 0
-
       if (activeObjective) {
         const userEntries = (activeObjective.kpi_entries || []).filter(e => e.user_id === u.id)
         const totalValue = userEntries.reduce((sum, e) => sum + e.value, 0)
@@ -54,15 +48,22 @@ export default function AdminDashboard() {
           : 0
       }
 
-      return { ...u, activeObjective, totalPoints, progress }
-    }))
+      const totalPoints = (allPointTx || [])
+        .filter(t => t.user_id === u.id)
+        .reduce((sum, t) => sum + t.points, 0)
 
-    setEmployees(employeesWithData)
-    setStats({
+      return { ...u, activeObjective, totalPoints, progress }
+    })
+
+    const stats = {
       total: users.length,
       activeObjectives: employeesWithData.filter(e => e.activeObjective).length,
       totalPoints: employeesWithData.reduce((sum, e) => sum + e.totalPoints, 0),
-    })
+    }
+
+    cache.set('admin:dashboard', { employees: employeesWithData, stats })
+    setEmployees(employeesWithData)
+    setStats(stats)
     setLoading(false)
   }
 
