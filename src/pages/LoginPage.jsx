@@ -20,8 +20,16 @@ export default function LoginPage() {
     setError('')
     setIsLoading(true)
 
+    // Safety net: if signIn hangs (e.g. Supabase unreachable), unlock the button
+    // after 10 seconds so the user isn't stuck with a frozen UI.
+    const timeoutId = setTimeout(() => {
+      setError('La conexión tardó demasiado. Verifica tu conexión e inténtalo de nuevo.')
+      setIsLoading(false)
+    }, 10000)
+
     try {
       const { error: signInError } = await signIn(email, password)
+      clearTimeout(timeoutId)
       if (signInError) {
         setError('Email o contraseña incorrectos. Verifica tus credenciales.')
         setIsLoading(false)
@@ -30,6 +38,7 @@ export default function LoginPage() {
       // triggering a re-render that hits the Navigate above. isLoading will be reset
       // when the component unmounts on redirect.
     } catch (err) {
+      clearTimeout(timeoutId)
       console.error('Unexpected login error:', err)
       setError('Ha ocurrido un error inesperado. Inténtalo de nuevo.')
       setIsLoading(false)
