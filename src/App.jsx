@@ -9,6 +9,8 @@ import AdminObjectives from './pages/admin/AdminObjectives'
 import AdminPoints from './pages/admin/AdminPoints'
 import AdminRewards from './pages/admin/AdminRewards'
 import AdminLeaderboard from './pages/admin/AdminLeaderboard'
+import AdminKPIs from './pages/admin/AdminKPIs'
+import AdminEmployeeDetail from './pages/admin/AdminEmployeeDetail'
 import EmployeeLayout from './pages/employee/EmployeeLayout'
 import EmployeeDashboard from './pages/employee/EmployeeDashboard'
 import EmployeeKPI from './pages/employee/EmployeeKPI'
@@ -71,6 +73,8 @@ function AppRoutes() {
         <Route path="points" element={<AdminPoints />} />
         <Route path="rewards" element={<AdminRewards />} />
         <Route path="leaderboard" element={<AdminLeaderboard />} />
+        <Route path="kpis" element={<AdminKPIs />} />
+        <Route path="employee/:id" element={<AdminEmployeeDetail />} />
       </Route>
 
       {/* Employee Routes */}
