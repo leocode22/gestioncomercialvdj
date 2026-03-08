@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 
 const navItems = [
   { to: '/employee', label: 'Mi panel', icon: '📊', end: true },
-  { to: '/employee/kpi', label: 'Mis KPIs', icon: '📝' },
+  { to: '/employee/objectives', label: 'Mis Objetivos', icon: '📝' },
   { to: '/employee/rewards', label: 'Recompensas', icon: '🎁' },
   { to: '/employee/leaderboard', label: 'Ranking', icon: '🏆' },
 ]

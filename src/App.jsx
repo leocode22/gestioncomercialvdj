@@ -79,7 +79,7 @@ function AppRoutes() {
         </ProtectedRoute>
       }>
         <Route index element={<EmployeeDashboard />} />
-        <Route path="kpi" element={<EmployeeKPI />} />
+        <Route path="objectives" element={<EmployeeKPI />} />
         <Route path="rewards" element={<EmployeeRewards />} />
         <Route path="leaderboard" element={<EmployeeLeaderboard />} />
       </Route>
