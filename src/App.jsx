@@ -12,6 +12,7 @@ import AdminLeaderboard from './pages/admin/AdminLeaderboard'
 import EmployeeLayout from './pages/employee/EmployeeLayout'
 import EmployeeDashboard from './pages/employee/EmployeeDashboard'
 import EmployeeKPI from './pages/employee/EmployeeKPI'
+import EmployeeLeadTracker from './pages/employee/EmployeeLeadTracker'
 import EmployeeRewards from './pages/employee/EmployeeRewards'
 import EmployeeLeaderboard from './pages/employee/EmployeeLeaderboard'
 
@@ -80,6 +81,7 @@ function AppRoutes() {
       }>
         <Route index element={<EmployeeDashboard />} />
         <Route path="objectives" element={<EmployeeKPI />} />
+        <Route path="kpis" element={<EmployeeLeadTracker />} />
         <Route path="rewards" element={<EmployeeRewards />} />
         <Route path="leaderboard" element={<EmployeeLeaderboard />} />
       </Route>
