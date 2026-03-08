@@ -50,7 +50,7 @@ export default function EmployeeKPI() {
   }
 
   async function handleSubmit(objective) {
-    const value = Number(entries[objective.id])
+    const value = parseInt(entries[objective.id], 10)
     if (!value || value <= 0) return
 
     setSubmitting(objective.id)
@@ -179,7 +179,7 @@ export default function EmployeeKPI() {
                     className="input"
                     placeholder={`ej: 3 ${obj.kpi_type}`}
                     min="0"
-                    step="0.5"
+                    step="1"
                   />
                 </div>
                 <div className="flex items-end">
