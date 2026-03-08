@@ -516,6 +516,135 @@ export default function EmployeeLeadTracker() {
           </p>
         )}
       </div>
+
+      {/* Performance Summary */}
+      <PerformanceSummary totals={totals} leads={leads} cashCollected={parseFloat(financial.cash_collected) || 0} />
+    </div>
+  )
+}
+
+function PerformanceSummary({ totals, leads, cashCollected }) {
+  const cierres = totals.close_call + totals.close_followup
+  const shows = totals.show
+  const ofertas = totals.offer
+
+  const leadsWithSalesCycle = leads.filter(
+    l => l.days_offer_to_close !== '' && l.days_offer_to_close !== null && l.days_offer_to_close !== undefined
+  )
+  const avgSalesCycle =
+    leadsWithSalesCycle.length > 0
+      ? leadsWithSalesCycle.reduce((acc, l) => acc + (parseInt(l.days_offer_to_close) || 0), 0) /
+        leadsWithSalesCycle.length
+      : null
+
+  const pct = (num, den) => (den === 0 ? null : (num / den) * 100)
+  const div = (num, den) => (den === 0 ? null : num / den)
+
+  const fmtPct = val => (val === null ? '—' : val.toFixed(2) + '%')
+  const fmtNum = val => (val === null ? '—' : val.toFixed(2))
+  const fmtEur = val => (val === null ? '—' : '€' + val.toFixed(2))
+
+  const metrics = [
+    {
+      label: 'Número de Shows',
+      value: shows.toString(),
+      color: 'blue',
+    },
+    {
+      label: 'Número de Ofertas Presentadas',
+      value: ofertas.toString(),
+      color: 'blue',
+    },
+    {
+      label: 'Número de Cierres',
+      value: cierres.toString(),
+      color: 'emerald',
+    },
+    {
+      label: 'Offer to Close %',
+      value: fmtPct(pct(cierres, ofertas)),
+      color: 'emerald',
+    },
+    {
+      label: 'Show to Close %',
+      value: fmtPct(pct(cierres, shows)),
+      color: 'emerald',
+    },
+    {
+      label: 'Closed on First Call %',
+      value: fmtPct(pct(totals.close_call, ofertas)),
+      color: 'amber',
+    },
+    {
+      label: 'Average Downsell %',
+      value: fmtPct(pct(totals.downsell, cierres)),
+      color: 'red',
+    },
+    {
+      label: 'Average Deal Size',
+      value: fmtEur(div(cashCollected, cierres)),
+      color: 'purple',
+    },
+    {
+      label: 'Decision Maker Rate %',
+      value: fmtPct(pct(totals.decision_maker, shows)),
+      color: 'blue',
+    },
+    {
+      label: 'Budget Qualification Rate %',
+      value: fmtPct(pct(totals.budget, ofertas)),
+      color: 'blue',
+    },
+    {
+      label: 'MAP Confirmation Rate %',
+      value: fmtPct(pct(totals.next_step, ofertas)),
+      color: 'amber',
+    },
+    {
+      label: 'Sales Cycle (días)',
+      value: fmtNum(avgSalesCycle),
+      color: 'purple',
+    },
+    {
+      label: 'Revenue per Show',
+      value: fmtEur(div(cashCollected, shows)),
+      color: 'emerald',
+    },
+    {
+      label: 'Revenue per Offer',
+      value: fmtEur(div(cashCollected, ofertas)),
+      color: 'emerald',
+    },
+    {
+      label: 'Revenue Mensual (comisión 10%)',
+      value: fmtEur(cashCollected * 0.1),
+      color: 'brand',
+    },
+  ]
+
+  const colorMap = {
+    blue: 'text-blue-400',
+    emerald: 'text-emerald-400',
+    amber: 'text-amber-400',
+    red: 'text-red-400',
+    purple: 'text-purple-400',
+    brand: 'text-brand-400',
+  }
+
+  return (
+    <div className="card">
+      <h2 className="text-base font-semibold text-white mb-4">Resumen Performance</h2>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+        {metrics.map(({ label, value, color }) => (
+          <div
+            key={label}
+            className="bg-dark-800 rounded-xl p-4 flex flex-col gap-1 border border-dark-700"
+          >
+            <span className="text-dark-400 text-xs leading-snug">{label}</span>
+            <span className={`text-xl font-bold mt-1 ${colorMap[color]}`}>{value}</span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
