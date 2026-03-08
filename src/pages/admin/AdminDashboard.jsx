@@ -101,7 +101,7 @@ export default function AdminDashboard() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[520px]">
               <thead>
                 <tr>
                   <th className="table-header text-left pb-3">Empleado</th>

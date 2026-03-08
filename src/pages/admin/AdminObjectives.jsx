@@ -110,7 +110,7 @@ export default function AdminObjectives() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-white">Objetivos</h1>
           <p className="text-dark-400 mt-1">Gestiona los KPIs y metas del equipo</p>
@@ -134,8 +134,9 @@ export default function AdminObjectives() {
           />
         </div>
       ) : (
-        <div className="card overflow-x-auto">
-          <table className="w-full">
+        <div className="card">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px]">
             <thead>
               <tr>
                 <th className="table-header text-left pb-3">Título</th>
@@ -196,6 +197,7 @@ export default function AdminObjectives() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 
@@ -218,7 +220,7 @@ export default function AdminObjectives() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="label">Tipo de KPI</label>
               <select
@@ -243,7 +245,7 @@ export default function AdminObjectives() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="label">Periodo</label>
               <select
@@ -269,7 +271,7 @@ export default function AdminObjectives() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="label">Fecha inicio</label>
               <input

@@ -106,19 +106,19 @@ export default function AdminEmployeeDetail() {
       {/* Employee info card */}
       <div className="card">
         <h2 className="text-base font-semibold text-white mb-4">Información del empleado</h2>
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-brand-600/20 border border-brand-600/30 rounded-full flex items-center justify-center text-2xl font-bold text-brand-400">
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="w-14 h-14 bg-brand-600/20 border border-brand-600/30 rounded-full flex items-center justify-center text-2xl font-bold text-brand-400 flex-shrink-0">
             {employee.name[0]?.toUpperCase()}
           </div>
-          <div className="space-y-1">
-            <p className="text-white font-semibold text-lg">{employee.name}</p>
-            <p className="text-dark-400 text-sm">{employee.email}</p>
+          <div className="space-y-1 flex-1 min-w-0">
+            <p className="text-white font-semibold text-lg truncate">{employee.name}</p>
+            <p className="text-dark-400 text-sm truncate">{employee.email}</p>
             <span className="badge bg-brand-600/20 text-brand-400 border border-brand-600/30 text-xs capitalize">
               {employee.role}
             </span>
           </div>
-          <div className="ml-auto">
-            <div className="text-right">
+          <div className="w-full sm:w-auto sm:ml-auto">
+            <div className="sm:text-right">
               <p className="text-dark-400 text-xs mb-1">Puntos acumulados</p>
               <p className="text-2xl font-bold text-amber-400">⚡ {totalPoints.toLocaleString()}</p>
             </div>

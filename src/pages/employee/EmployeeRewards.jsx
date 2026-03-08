@@ -161,7 +161,7 @@ export default function EmployeeRewards() {
                     <button
                       onClick={() => setConfirmReward(reward)}
                       disabled={!canRedeem}
-                      className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                      className={`px-4 py-1.5 min-h-[44px] rounded-lg text-sm font-semibold transition-all ${
                         canRedeem
                           ? 'btn-success'
                           : 'bg-dark-700 text-dark-500 cursor-not-allowed'

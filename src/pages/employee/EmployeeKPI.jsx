@@ -169,7 +169,7 @@ export default function EmployeeKPI() {
                 />
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <div className="flex-1">
                   <label className="label text-xs">Añadir valor de hoy</label>
                   <input
@@ -186,7 +186,7 @@ export default function EmployeeKPI() {
                   <button
                     onClick={() => handleSubmit(obj)}
                     disabled={submitting === obj.id || !entries[obj.id]}
-                    className="btn-primary h-[42px] px-6 disabled:opacity-50"
+                    className="btn-primary w-full sm:w-auto h-[44px] px-6 disabled:opacity-50"
                   >
                     {submitting === obj.id ? (
                       <span className="flex items-center gap-2">

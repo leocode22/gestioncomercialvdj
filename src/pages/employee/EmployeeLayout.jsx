@@ -27,7 +27,7 @@ export default function EmployeeLayout() {
       {/* Sidebar */}
       <aside className={`
         fixed inset-y-0 left-0 z-40 w-64 bg-dark-900 border-r border-dark-800 flex flex-col
-        transform transition-transform duration-300 lg:translate-x-0
+        transform transition-transform duration-300 md:translate-x-0
         ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         {/* Logo */}
@@ -90,15 +90,15 @@ export default function EmployeeLayout() {
       {/* Mobile overlay */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 bg-dark-950/80 z-30 lg:hidden"
+          className="fixed inset-0 bg-dark-950/80 z-30 md:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}
 
       {/* Main content */}
-      <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
+      <div className="flex-1 md:ml-64 flex flex-col min-h-screen">
         {/* Mobile topbar */}
-        <header className="lg:hidden flex items-center justify-between p-4 bg-dark-900 border-b border-dark-800">
+        <header className="md:hidden flex items-center justify-between p-4 bg-dark-900 border-b border-dark-800">
           <button
             onClick={() => setMobileOpen(true)}
             className="p-2 rounded-lg hover:bg-dark-800 text-dark-400 hover:text-white transition-colors"
@@ -113,7 +113,7 @@ export default function EmployeeLayout() {
           </div>
         </header>
 
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-4 md:p-6">
           <Outlet />
         </main>
       </div>
