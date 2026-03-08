@@ -90,7 +90,7 @@ export default function AdminLeaderboard() {
         <div className="space-y-4">
           {/* Top 3 podium */}
           {ranking.length >= 3 && (
-            <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
               {[1, 0, 2].map(idx => {
                 const user = ranking[idx]
                 if (!user) return <div key={idx} />
@@ -101,24 +101,24 @@ export default function AdminLeaderboard() {
                 return (
                   <div
                     key={user.id}
-                    className={`card text-center relative flex flex-col items-center ${
-                      isFirst ? 'border-amber-500/30 bg-amber-500/5 pt-8' : 'pt-6'
+                    className={`bg-dark-800 border border-dark-700 rounded-xl p-3 sm:p-6 text-center relative flex flex-col items-center ${
+                      isFirst ? 'border-amber-500/30 bg-amber-500/5 pt-6 sm:pt-8' : 'pt-4 sm:pt-6'
                     }`}
                     style={{ order: idx === 0 ? -1 : idx }}
                   >
                     {isFirst && (
-                      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 text-3xl">👑</div>
+                      <div className="absolute -top-3 sm:-top-4 left-1/2 transform -translate-x-1/2 text-2xl sm:text-3xl">👑</div>
                     )}
-                    <div className={`w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold mb-3 ${
+                    <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-full flex items-center justify-center text-base sm:text-xl font-bold mb-2 sm:mb-3 ${
                       MEDAL_COLORS[idx] || 'bg-dark-700 text-white'
                     }`}>
                       {user.name?.[0]?.toUpperCase()}
                     </div>
-                    <div className={`badge mb-2 ${MEDAL_COLORS[idx] || 'bg-dark-700 text-white'} font-bold`}>
+                    <div className={`badge mb-1 sm:mb-2 ${MEDAL_COLORS[idx] || 'bg-dark-700 text-white'} font-bold`}>
                       #{idx + 1}
                     </div>
-                    <p className="text-white font-semibold text-sm">{user.name}</p>
-                    <p className="text-2xl font-bold text-amber-400 mt-1">{user.totalPoints.toLocaleString()}</p>
+                    <p className="text-white font-semibold text-xs sm:text-sm truncate w-full text-center">{user.name}</p>
+                    <p className="text-lg sm:text-2xl font-bold text-amber-400 mt-1">{user.totalPoints.toLocaleString()}</p>
                     <p className="text-dark-400 text-xs">puntos</p>
                   </div>
                 )
@@ -128,7 +128,8 @@ export default function AdminLeaderboard() {
 
           {/* Full table */}
           <div className="card">
-            <table className="w-full">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-[400px]">
               <thead>
                 <tr>
                   <th className="table-header text-left pb-3 w-12">Pos.</th>
@@ -175,6 +176,7 @@ export default function AdminLeaderboard() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
       )}

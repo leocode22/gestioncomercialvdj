@@ -68,8 +68,8 @@ export default function EmployeeLeaderboard() {
           myRank === 3 ? 'border-amber-700/50 bg-amber-700/5' :
           'border-brand-500/30 bg-brand-500/5'
         }`}>
-          <div className="flex items-center gap-4">
-            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-lg ${
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl font-bold shadow-lg flex-shrink-0 ${
               myRank === 1 ? 'bg-amber-500 text-amber-900 shadow-amber-500/30' :
               myRank === 2 ? 'bg-slate-400 text-slate-900 shadow-slate-400/30' :
               myRank === 3 ? 'bg-amber-700 text-amber-100 shadow-amber-700/30' :
@@ -77,16 +77,16 @@ export default function EmployeeLeaderboard() {
             }`}>
               {myRank <= 3 ? MEDALS[myRank - 1] : `#${myRank}`}
             </div>
-            <div className="flex-1">
-              <p className="text-white font-bold text-lg">Tu posición este mes</p>
+            <div className="flex-1 min-w-0">
+              <p className="text-white font-bold text-base sm:text-lg">Tu posición este mes</p>
               <p className="text-dark-400 text-sm">
                 {myRank === 1 ? '¡Eres el número 1! 🔥 Sigue así' :
                  myRank <= 3 ? '¡Estás en el podio! 💪 A por el oro' :
                  `Posición #${myRank}. ¡A por los primeros puestos!`}
               </p>
             </div>
-            <div className="text-right">
-              <p className="text-3xl font-bold text-amber-400">{myRankData.totalPoints.toLocaleString()}</p>
+            <div className="text-right flex-shrink-0">
+              <p className="text-2xl sm:text-3xl font-bold text-amber-400">{myRankData.totalPoints.toLocaleString()}</p>
               <p className="text-dark-400 text-xs">puntos</p>
             </div>
           </div>
