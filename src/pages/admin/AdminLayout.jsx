@@ -8,6 +8,7 @@ const navItems = [
   { to: '/admin/points', label: 'Puntos', icon: '⚡' },
   { to: '/admin/rewards', label: 'Recompensas', icon: '🎁' },
   { to: '/admin/leaderboard', label: 'Ranking', icon: '🏆' },
+  { to: '/admin/kpis', label: 'KPIs del Equipo', icon: '📈' },
 ]
 
 export default function AdminLayout() {

@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { cache } from '../../lib/cache'
 import StatCard from '../../components/StatCard'
 import ProgressBar from '../../components/ProgressBar'
 
 export default function AdminDashboard() {
+  const navigate = useNavigate()
   const [employees, setEmployees] = useState([])
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({ total: 0, activeObjectives: 0, totalPoints: 0 })
@@ -110,7 +112,12 @@ export default function AdminDashboard() {
               </thead>
               <tbody>
                 {employees.map(emp => (
-                  <tr key={emp.id} className="table-row">
+                  <tr
+                    key={emp.id}
+                    className="table-row cursor-pointer hover:bg-brand-600/5 transition-colors"
+                    onClick={() => navigate(`/admin/employee/${emp.id}`)}
+                    title={`Ver perfil de ${emp.name}`}
+                  >
                     <td className="py-3 pr-4">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-brand-600/20 border border-brand-600/30 rounded-full flex items-center justify-center text-sm font-bold text-brand-400">
