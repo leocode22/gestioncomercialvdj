@@ -200,6 +200,62 @@ CREATE POLICY "Users manage own redemptions" ON public.reward_redemptions
 
 
 -- ─────────────────────────────────────────────────────────────
+-- KPI_LEAD_ENTRIES
+-- Tracker mensual de leads por empleado
+-- ─────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.kpi_lead_entries (
+  id                   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id              UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  month                INTEGER NOT NULL CHECK (month BETWEEN 1 AND 12),
+  year                 INTEGER NOT NULL CHECK (year >= 2020),
+  lead_name            TEXT NOT NULL DEFAULT '',
+  show                 BOOLEAN NOT NULL DEFAULT false,
+  offer                BOOLEAN NOT NULL DEFAULT false,
+  decision_maker       BOOLEAN NOT NULL DEFAULT false,
+  budget               BOOLEAN NOT NULL DEFAULT false,
+  downsell             BOOLEAN NOT NULL DEFAULT false,
+  close_call           BOOLEAN NOT NULL DEFAULT false,
+  next_step            BOOLEAN NOT NULL DEFAULT false,
+  close_followup       BOOLEAN NOT NULL DEFAULT false,
+  days_show_to_offer   INTEGER,
+  days_offer_to_close  INTEGER,
+  created_at           TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.kpi_lead_entries ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users manage own lead entries" ON public.kpi_lead_entries
+  FOR ALL USING (
+    user_id = auth.uid()
+    OR EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
+  );
+
+
+-- ─────────────────────────────────────────────────────────────
+-- KPI_FINANCIAL_ENTRIES
+-- Resultados financieros mensuales por empleado
+-- ─────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.kpi_financial_entries (
+  id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id               UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  month                 INTEGER NOT NULL CHECK (month BETWEEN 1 AND 12),
+  year                  INTEGER NOT NULL CHECK (year >= 2020),
+  cash_collected        NUMERIC,
+  facturacion_generada  NUMERIC,
+  created_at            TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE (user_id, month, year)
+);
+
+ALTER TABLE public.kpi_financial_entries ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users manage own financial entries" ON public.kpi_financial_entries
+  FOR ALL USING (
+    user_id = auth.uid()
+    OR EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
+  );
+
+
+-- ─────────────────────────────────────────────────────────────
 -- DATOS DE EJEMPLO (opcional, descomenta para usar)
 -- ─────────────────────────────────────────────────────────────
 
